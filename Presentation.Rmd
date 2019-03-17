@@ -33,7 +33,7 @@ After having these three songs, I'd like to compare them so that I can see how t
 
 ### Chromagrams
 
-
+```{r chromagrams}
 
 wolves %>% 
     mutate(pitches = map(pitches, compmus_normalise, 'euclidean')) %>% 
