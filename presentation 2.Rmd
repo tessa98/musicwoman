@@ -1,0 +1,229 @@
+---
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+Woman in music {data-width=325}
+-----------------------------------------------------------------------
+
+### Presentation
+
+
+My research is based on a principle of researching the playlists of the most listened to women in 2016,2017 and 2018. This would serve to determine which style of music could be the most listened to with female singers. 
+
+Once analyzed the 3 lists we can say that the most listened to are: **Beyoncé's** *7/11* in 2016, **Selena Gomez**'s *Wolves* in 2017 and finally in 2018, the most listened to song was **Lady Gaga's** *Shallow* from the movie "a star has born", although this one is exactly in the same points as Ellie Goulding's Close To Me, and I chose Shallow because, in my opinion, it made much more impact than this second song. 
+
+After having these three songs, I'd like to compare them so that I can see how the most listened to women of the last 3 years have evolved to see if they follow any pattern or if it's just a coincidence that these are the 3 most listened to. 
+
+
+-----------------------------------------------------------------------
+
+### Chromagrams
+
+```{r chromagrams}
+
+wolves %>% 
+    mutate(pitches = map(pitches, compmus_normalise, 'euclidean')) %>% 
+    compmus_gather_chroma %>% 
+    ggplot(
+        aes(
+            x = start + duration / 2, 
+            width = duration, 
+            y = pitch_class, 
+            fill = value)) + 
+    geom_tile() +
+    labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
+    theme_minimal()
+beyonce %>% 
+    mutate(pitches = map(pitches, compmus_normalise, 'euclidean')) %>% 
+    compmus_gather_chroma %>% 
+    ggplot(
+        aes(
+            x = start + duration / 2, 
+            width = duration, 
+            y = pitch_class, 
+            fill = value)) + 
+    geom_tile() +
+    labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
+    theme_minimal()
+shallow %>% 
+    mutate(pitches = map(pitches, compmus_normalise, 'euclidean')) %>% 
+    compmus_gather_chroma %>% 
+    ggplot(
+        aes(
+            x = start + duration / 2, 
+            width = duration, 
+            y = pitch_class, 
+            fill = value)) + 
+    geom_tile() +
+    labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
+    theme_minimal()
+
+
+
+```
+
+***
+Here we can see the pitch graphics of Wolves, 7/11 and Shallow respectively. As we can see, the first and second have something in common, but the third already deviates from the other ones.  
+
+### Cepstrogram
+
+```{r}
+wolvees %>%
+    compmus_gather_timbre %>% 
+    ggplot(
+        aes(
+            x = start + duration / 2, 
+            width = duration, 
+            y = basis, 
+            fill = value)) + 
+    geom_tile() +
+    labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
+    scale_fill_viridis_c(option = 'E') +
+    theme_classic()
+beyoncee %>% 
+    compmus_gather_timbre %>% 
+    ggplot(
+        aes(
+            x = start + duration / 2, 
+            width = duration, 
+            y = basis, 
+            fill = value)) + 
+    geom_tile() +
+    labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
+    scale_fill_viridis_c(option = 'E') +
+    theme_classic()
+shalloww %>% 
+    compmus_gather_timbre %>% 
+    ggplot(
+        aes(
+            x = start + duration / 2, 
+            width = duration, 
+            y = basis, 
+            fill = value)) + 
+    geom_tile() +
+    labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
+    scale_fill_viridis_c(option = 'E') +
+    theme_classic()
+
+```
+*** 
+observing now the ceptograms, we can observe that again, the songs of 2016- 2017 have some similarity, but that nevertheless the 2018 returns to break with the norm that they are similar. 
+-----------------------------------------------------------------------
+
+### comparation 
+
+```{r}
+wolvees %>% 
+    compmus_self_similarity(timbre, 'cosine') %>% 
+    ggplot(
+        aes(
+            x = xstart + xduration / 2, 
+            width = xduration,
+            y = ystart + yduration / 2,
+            height = yduration,
+            fill = d)) + 
+    geom_tile() +
+    coord_fixed() +
+    scale_fill_viridis_c(option = 'E', guide = 'none') +
+    theme_classic() +
+    labs(x = '', y = '') 
+beyoncee %>% 
+    compmus_self_similarity(timbre, 'cosine') %>% 
+    ggplot(
+        aes(
+            x = xstart + xduration / 2, 
+            width = xduration,
+            y = ystart + yduration / 2,
+            height = yduration,
+            fill = d)) + 
+    geom_tile() +
+    coord_fixed() +
+    scale_fill_viridis_c(option = 'E', guide = 'none') +
+    theme_classic() +
+    labs(x = '', y = '')
+shalloww %>% 
+    compmus_self_similarity(timbre, 'cosine') %>% 
+    ggplot(
+        aes(
+            x = xstart + xduration / 2, 
+            width = xduration,
+            y = ystart + yduration / 2,
+            height = yduration,
+            fill = d)) + 
+    geom_tile() +
+    coord_fixed() +
+    scale_fill_viridis_c(option = 'E', guide = 'none') +
+    theme_classic() +
+    labs(x = '', y = '')
+
+
+```
+
+***
+However, we see that with respect to the structure of this analysis, Shallow looks more like Wolves than 7/11
+
+
+
+### Comparation 
+```{r}
+womanunoytres %>% 
+    mutate(
+        sections = 
+            map(
+                sections, 
+                summarise_at, 
+                vars(tempo, loudness, duration), 
+                list(section_mean = mean, section_sd = sd))) %>% 
+    unnest(sections) %>%
+    ggplot(
+        aes(
+            x = tempo, 
+            y = tempo_section_sd, 
+            colour = genre, 
+            alpha = loudness)) +
+    geom_point(aes(size = duration / 60)) + 
+    geom_rug() + 
+    theme_minimal() +
+    ylim(0, 5) + 
+    labs(
+        x = 'Mean Tempo (bpm)', 
+        y = 'SD Tempo', 
+        colour = 'Genre', 
+        size = 'Duration (min)', 
+        alpha = 'Volume (dBFS)')
+
+womandosytres %>% 
+    mutate(
+        sections = 
+            map(
+                sections, 
+                summarise_at, 
+                vars(tempo, loudness, duration), 
+                list(section_mean = mean, section_sd = sd))) %>% 
+    unnest(sections) %>%
+    ggplot(
+        aes(
+            x = tempo, 
+            y = tempo_section_sd, 
+            colour = genre, 
+            alpha = loudness)) +
+    geom_point(aes(size = duration / 60)) + 
+    geom_rug() + 
+    theme_minimal() +
+    ylim(0, 5) + 
+    labs(
+        x = 'Mean Tempo (bpm)', 
+        y = 'SD Tempo', 
+        colour = 'Genre', 
+        size = 'Duration (min)', 
+        alpha = 'Volume (dBFS)')
+
+```
