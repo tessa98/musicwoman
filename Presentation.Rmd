@@ -1,0 +1,83 @@
+---
+title: "Woman in music"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    storyboard: true
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(spotifyr)
+library(compmus)
+```
+
+Woman in music {data-width=325}
+-----------------------------------------------------------------------
+
+### Presentation
+
+
+My research is based on a principle of researching the playlists of the most listened to women in 2016,2017 and 2018. This would serve to determine which style of music could be the most listened to with female singers. 
+
+Once analyzed the 3 lists we can say that the most listened to are: **Beyoncé's** *7/11* in 2016, **Selena Gomez**'s *Wolves* in 2017 and finally in 2018, the most listened to song was **Lady Gaga's** *Shallow* from the movie "a star has born", although this one is exactly in the same points as Ellie Goulding's Close To Me, and I chose Shallow because, in my opinion, it made much more impact than this second song. 
+
+After having these three songs, I'd like to compare them so that I can see how the most listened to women of the last 3 years have evolved to see if they follow any pattern or if it's just a coincidence that these are the 3 most listened to. 
+
+
+-----------------------------------------------------------------------
+
+### Chromagrams
+
+```{r}
+wolves %>% 
+    mutate(pitches = map(pitches, compmus_normalise, 'euclidean')) %>% 
+    compmus_gather_chroma %>% 
+    ggplot(
+        aes(
+            x = start + duration / 2, 
+            width = duration, 
+            y = pitch_class, 
+            fill = value)) + 
+    geom_tile() +
+    labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
+    theme_minimal()
+beyonce %>% 
+    mutate(pitches = map(pitches, compmus_normalise, 'euclidean')) %>% 
+    compmus_gather_chroma %>% 
+    ggplot(
+        aes(
+            x = start + duration / 2, 
+            width = duration, 
+            y = pitch_class, 
+            fill = value)) + 
+    geom_tile() +
+    labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
+    theme_minimal()
+shallow %>% 
+    mutate(pitches = map(pitches, compmus_normalise, 'euclidean')) %>% 
+    compmus_gather_chroma %>% 
+    ggplot(
+        aes(
+            x = start + duration / 2, 
+            width = duration, 
+            y = pitch_class, 
+            fill = value)) + 
+    geom_tile() +
+    labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
+    theme_minimal()
+
+
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
