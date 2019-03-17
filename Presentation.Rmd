@@ -75,9 +75,50 @@ shallow %>%
 
 ```
 
-### Chart C
+***
+Here we can see the pitch graphics of Wolves, 7/11 and Shallow respectively. As we can see, the first and second have something in common, but the third already deviates from the other ones.  
+
+### Cepstrogram
 
 ```{r}
+wolvees %>%
+    compmus_gather_timbre %>% 
+    ggplot(
+        aes(
+            x = start + duration / 2, 
+            width = duration, 
+            y = basis, 
+            fill = value)) + 
+    geom_tile() +
+    labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
+    scale_fill_viridis_c(option = 'E') +
+    theme_classic()
+beyoncee %>% 
+    compmus_gather_timbre %>% 
+    ggplot(
+        aes(
+            x = start + duration / 2, 
+            width = duration, 
+            y = basis, 
+            fill = value)) + 
+    geom_tile() +
+    labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
+    scale_fill_viridis_c(option = 'E') +
+    theme_classic()
+shalloww %>% 
+    compmus_gather_timbre %>% 
+    ggplot(
+        aes(
+            x = start + duration / 2, 
+            width = duration, 
+            y = basis, 
+            fill = value)) + 
+    geom_tile() +
+    labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
+    scale_fill_viridis_c(option = 'E') +
+    theme_classic()
 
 ```
+*** 
+observing now the ceptograms, we can observe that again, the songs of 2016- 2017 have some similarity, but that nevertheless the 2018 returns to break with the norm that they are similar. 
 
