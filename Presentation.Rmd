@@ -33,7 +33,8 @@ After having these three songs, I'd like to compare them so that I can see how t
 
 ### Chromagrams
 
-```{r chromagrams}
+
+
 wolves %>% 
     mutate(pitches = map(pitches, compmus_normalise, 'euclidean')) %>% 
     compmus_gather_chroma %>% 
@@ -238,56 +239,15 @@ Could we somehow find some common factor between the songs of the years 2016 and
 
 ### Comparation 
 ```{r}
-womanunoytres %>% 
-    mutate(
-        sections = 
-            map(
-                sections, 
-                summarise_at, 
-                vars(tempo, loudness, duration), 
-                list(section_mean = mean, section_sd = sd))) %>% 
-    unnest(sections) %>%
-    ggplot(
-        aes(
-            x = tempo, 
-            y = tempo_section_sd, 
-            colour = genre, 
-            alpha = loudness)) +
-    geom_point(aes(size = duration / 60)) + 
-    geom_rug() + 
-    theme_minimal() +
-    ylim(0, 5) + 
-    labs(
-        x = 'Mean Tempo (bpm)', 
-        y = 'SD Tempo', 
-        colour = 'Genre', 
-        size = 'Duration (min)', 
-        alpha = 'Volume (dBFS)')
-
-womandosytres %>% 
-    mutate(
-        sections = 
-            map(
-                sections, 
-                summarise_at, 
-                vars(tempo, loudness, duration), 
-                list(section_mean = mean, section_sd = sd))) %>% 
-    unnest(sections) %>%
-    ggplot(
-        aes(
-            x = tempo, 
-            y = tempo_section_sd, 
-            colour = genre, 
-            alpha = loudness)) +
-    geom_point(aes(size = duration / 60)) + 
-    geom_rug() + 
-    theme_minimal() +
-    ylim(0, 5) + 
-    labs(
-        x = 'Mean Tempo (bpm)', 
-        y = 'SD Tempo', 
-        colour = 'Genre', 
-        size = 'Duration (min)', 
-        alpha = 'Volume (dBFS)')
+woman_cv%>% 
+    mutate(pred = map(splits, predict_knn)) %>% unnest(pred) %>% 
+    conf_mat(truth = playlist, estimate = .pred_class) %>% 
+    autoplot(type = 'heatmap')
 
 ```
+*** 
+Finally, here we can find what would be the coincidences between the years in numerical values, we are no longer talking about the number one, as we have spoken before, but we have included each and every one of the songs that enter the top of most listened songs that are sung by women. How many songs are similar after each year? Here we can see it. 
+
+### Conclusion 
+
+ We can conclude, with all this exposed I can get to say that although the songs have some resemblance in some aspect (the top of each year), never get to establish a pattern that is visible to create a success, will there be a formula for it? However, as an observation, we can see that when we compare the entire lists there is some similarity between them, so maybe "in general features" we can create a "success" by listening to the songs that were successful in recent years. 
