@@ -1,13 +1,19 @@
 ---
-title: "Untitled"
+title: "Woman in music"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
+    storyboard: true
+editor_options: 
+  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
+library(tidyverse)
+library(spotifyr)
+library(compmus)
 ```
 
 Woman in music {data-width=325}
