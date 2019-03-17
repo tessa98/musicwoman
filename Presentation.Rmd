@@ -33,7 +33,7 @@ After having these three songs, I'd like to compare them so that I can see how t
 
 ### Chromagrams
 
-```{r}
+```{r chromagrams}
 wolves %>% 
     mutate(pitches = map(pitches, compmus_normalise, 'euclidean')) %>% 
     compmus_gather_chroma %>% 
@@ -121,4 +121,173 @@ shalloww %>%
 ```
 *** 
 observing now the ceptograms, we can observe that again, the songs of 2016- 2017 have some similarity, but that nevertheless the 2018 returns to break with the norm that they are similar. 
+-----------------------------------------------------------------------
 
+### comparation 
+
+```{r}
+wolvees %>% 
+    compmus_self_similarity(timbre, 'cosine') %>% 
+    ggplot(
+        aes(
+            x = xstart + xduration / 2, 
+            width = xduration,
+            y = ystart + yduration / 2,
+            height = yduration,
+            fill = d)) + 
+    geom_tile() +
+    coord_fixed() +
+    scale_fill_viridis_c(option = 'E', guide = 'none') +
+    theme_classic() +
+    labs(x = '', y = '') 
+beyoncee %>% 
+    compmus_self_similarity(timbre, 'cosine') %>% 
+    ggplot(
+        aes(
+            x = xstart + xduration / 2, 
+            width = xduration,
+            y = ystart + yduration / 2,
+            height = yduration,
+            fill = d)) + 
+    geom_tile() +
+    coord_fixed() +
+    scale_fill_viridis_c(option = 'E', guide = 'none') +
+    theme_classic() +
+    labs(x = '', y = '')
+shalloww %>% 
+    compmus_self_similarity(timbre, 'cosine') %>% 
+    ggplot(
+        aes(
+            x = xstart + xduration / 2, 
+            width = xduration,
+            y = ystart + yduration / 2,
+            height = yduration,
+            fill = d)) + 
+    geom_tile() +
+    coord_fixed() +
+    scale_fill_viridis_c(option = 'E', guide = 'none') +
+    theme_classic() +
+    labs(x = '', y = '')
+
+
+```
+
+***
+However, we see that with respect to the structure of this analysis, Shallow looks more like Wolves than 7/11
+
+
+
+### Comparation 
+```{r}
+womanunoytres %>% 
+    mutate(
+        sections = 
+            map(
+                sections, 
+                summarise_at, 
+                vars(tempo, loudness, duration), 
+                list(section_mean = mean, section_sd = sd))) %>% 
+    unnest(sections) %>%
+    ggplot(
+        aes(
+            x = tempo, 
+            y = tempo_section_sd, 
+            colour = genre, 
+            alpha = loudness)) +
+    geom_point(aes(size = duration / 60)) + 
+    geom_rug() + 
+    theme_minimal() +
+    ylim(0, 5) + 
+    labs(
+        x = 'Mean Tempo (bpm)', 
+        y = 'SD Tempo', 
+        colour = 'Genre', 
+        size = 'Duration (min)', 
+        alpha = 'Volume (dBFS)')
+
+womandosytres %>% 
+    mutate(
+        sections = 
+            map(
+                sections, 
+                summarise_at, 
+                vars(tempo, loudness, duration), 
+                list(section_mean = mean, section_sd = sd))) %>% 
+    unnest(sections) %>%
+    ggplot(
+        aes(
+            x = tempo, 
+            y = tempo_section_sd, 
+            colour = genre, 
+            alpha = loudness)) +
+    geom_point(aes(size = duration / 60)) + 
+    geom_rug() + 
+    theme_minimal() +
+    ylim(0, 5) + 
+    labs(
+        x = 'Mean Tempo (bpm)', 
+        y = 'SD Tempo', 
+        colour = 'Genre', 
+        size = 'Duration (min)', 
+        alpha = 'Volume (dBFS)')
+
+```
+***
+Could we somehow find some common factor between the songs of the years 2016 and 2018, and those of 2017 and 2018?
+
+
+### Comparation 
+```{r}
+womanunoytres %>% 
+    mutate(
+        sections = 
+            map(
+                sections, 
+                summarise_at, 
+                vars(tempo, loudness, duration), 
+                list(section_mean = mean, section_sd = sd))) %>% 
+    unnest(sections) %>%
+    ggplot(
+        aes(
+            x = tempo, 
+            y = tempo_section_sd, 
+            colour = genre, 
+            alpha = loudness)) +
+    geom_point(aes(size = duration / 60)) + 
+    geom_rug() + 
+    theme_minimal() +
+    ylim(0, 5) + 
+    labs(
+        x = 'Mean Tempo (bpm)', 
+        y = 'SD Tempo', 
+        colour = 'Genre', 
+        size = 'Duration (min)', 
+        alpha = 'Volume (dBFS)')
+
+womandosytres %>% 
+    mutate(
+        sections = 
+            map(
+                sections, 
+                summarise_at, 
+                vars(tempo, loudness, duration), 
+                list(section_mean = mean, section_sd = sd))) %>% 
+    unnest(sections) %>%
+    ggplot(
+        aes(
+            x = tempo, 
+            y = tempo_section_sd, 
+            colour = genre, 
+            alpha = loudness)) +
+    geom_point(aes(size = duration / 60)) + 
+    geom_rug() + 
+    theme_minimal() +
+    ylim(0, 5) + 
+    labs(
+        x = 'Mean Tempo (bpm)', 
+        y = 'SD Tempo', 
+        colour = 'Genre', 
+        size = 'Duration (min)', 
+        alpha = 'Volume (dBFS)')
+
+```
