@@ -10,10 +10,14 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-library(flexdashboard)
 library(tidyverse)
+library(tidymodels)
+library(ggdendro)
+library(protoclust)
 library(spotifyr)
 library(compmus)
+```
+
 ```
 
 Woman in music {data-width=325}
@@ -34,6 +38,18 @@ After having these three songs, I'd like to compare them so that I can see how t
 ### Chromagrams
 
 ```{r chromagrams}
+wolves <- 
+    get_tidy_audio_analysis('0tBbt8CrmxbjRP0pueQkyU') %>% 
+    select(segments) %>% unnest(segments) %>% 
+    select(start, duration, pitches)
+beyonce <- 
+    get_tidy_audio_analysis('02M6vucOvmRfMxTXDUwRXu') %>% 
+    select(segments) %>% unnest(segments) %>% 
+    select(start, duration, pitches)
+shallow  <- 
+    get_tidy_audio_analysis('2VxeLyX666F8uXCJ0dZF8B') %>% 
+    select(segments) %>% unnest(segments) %>% 
+    select(start, duration, pitches)
 
 wolves %>% 
     mutate(pitches = map(pitches, compmus_normalise, 'euclidean')) %>% 
@@ -82,6 +98,52 @@ Here we can see the pitch graphics of Wolves, 7/11 and Shallow respectively. As 
 ### Cepstrogram
 
 ```{r}
+wolvees <- 
+    get_tidy_audio_analysis('0tBbt8CrmxbjRP0pueQkyU') %>% 
+    compmus_align(bars, segments) %>% 
+    select(bars) %>% unnest(bars) %>% 
+    mutate(
+        pitches = 
+            map(segments, 
+                compmus_summarise, pitches, 
+                method = 'rms', norm = 'euclidean')) %>% 
+    mutate(
+        timbre = 
+            map(segments, 
+                compmus_summarise, timbre, 
+                method = 'mean'))
+beyoncee <- 
+    get_tidy_audio_analysis('02M6vucOvmRfMxTXDUwRXu') %>% 
+    compmus_align(bars, segments) %>% 
+    select(bars) %>% unnest(bars) %>% 
+    mutate(
+        pitches = 
+            map(segments, 
+                compmus_summarise, pitches, 
+                method = 'rms', norm = 'euclidean')) %>% 
+    mutate(
+        timbre = 
+            map(segments, 
+                compmus_summarise, timbre, 
+                method = 'mean'))
+shalloww <- 
+    get_tidy_audio_analysis('2VxeLyX666F8uXCJ0dZF8B') %>% 
+    compmus_align(bars, segments) %>% 
+    select(bars) %>% unnest(bars) %>% 
+    mutate(
+        pitches = 
+            map(segments, 
+                compmus_summarise, pitches, 
+                method = 'rms', norm = 'euclidean')) %>% 
+    mutate(
+        timbre = 
+            map(segments, 
+                compmus_summarise, timbre, 
+                method = 'mean'))
+
+
+
+
 wolvees %>%
     compmus_gather_timbre %>% 
     ggplot(
@@ -120,9 +182,10 @@ shalloww %>%
     theme_classic()
 
 ```
+
+
 *** 
 observing now the ceptograms, we can observe that again, the songs of 2016- 2017 have some similarity, but that nevertheless the 2018 returns to break with the norm that they are similar. 
------------------------------------------------------------------------
 
 ### comparation 
 
@@ -180,6 +243,36 @@ However, we see that with respect to the structure of this analysis, Shallow loo
 
 ### Comparation 
 ```{r}
+woman2016 <-
+    get_playlist_audio_features(
+        'spotify', 
+        '37i9dQZF1DX2rKs1aXP9c1') %>% 
+    slice(1:30) %>% 
+    add_audio_analysis()
+woman2017 <-
+    get_playlist_audio_features(
+        'spotify', 
+        '37i9dQZF1DX27hx1vGd0BZ') %>% 
+    slice(1:30) %>% 
+    add_audio_analysis()
+woman2018 <-
+    get_playlist_audio_features(
+        'spotify', 
+        '37i9dQZF1DX82tVoNhkbcO') %>% 
+    slice(1:30) %>% 
+    add_audio_analysis()
+
+womanunoydos <-
+    woman2016 %>% mutate(genre = "Year 2016") %>%
+    bind_rows(woman2017 %>% mutate(genre = "Year 2017"))
+womandosytres <-
+    woman2017 %>% mutate(genre = "Year 2017") %>%
+    bind_rows(woman2018 %>% mutate(genre = "Year 2018"))
+womanunoytres <-
+    woman2017 %>% mutate(genre = "Year 2016") %>%
+    bind_rows(woman2018 %>% mutate(genre = "Year 2018"))
+
+
 womanunoytres %>% 
     mutate(
         sections = 
@@ -233,3 +326,10 @@ womandosytres %>%
         alpha = 'Volume (dBFS)')
 
 ```
+
+*** 
+Finally, here we can find what would be the coincidences between the years in numerical values, we are no longer talking about the number one, as we have spoken before, but we have included each and every one of the songs that enter the top of most listened songs that are sung by women. How many songs are similar after each year? Here we can see it. 
+
+### Conclusion 
+
+ We can conclude, with all this exposed I can get to say that although the songs have some resemblance in some aspect (the top of each year), never get to establish a pattern that is visible to create a success, will there be a formula for it? However, as an observation, we can see that when we compare the entire lists there is some similarity between them, so maybe "in general features" we can create a "success" by listening to the songs that were successful in recent years. 
